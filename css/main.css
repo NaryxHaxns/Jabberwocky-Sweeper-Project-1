@@ -1,17 +1,81 @@
 body {
     height: 100vh;
+    font-family: 'Eater', cursive;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
+    position: relative;
+    background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/bgimage.jpg);
+    background-position: center;
+    background-size: cover;
+}
+
+h1 {
+    position: absolute;
+    align-self: flex-start;
+    margin-top: 16.5%;
+}
+
+.timer, .mines {
+    height: 50px;
+    width: 125px;
+    border: 3px solid black;
 }
 
 main {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(9, 1fr);
     width: 33%;
     height: 33%;
+    border: 3px solid black;
 }
 
-/* .tile {
-} */
+.tile {
+    border: 1px solid black;
+}
+
+#colOne {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colTwo {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colThree {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colFour {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colFive {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colSix {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colSeven {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colEight {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+
+#colNine {
+    display: grid;
+    grid-template-rows: repeat(9, 1fr);
+}
+

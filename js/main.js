@@ -32,8 +32,8 @@ let lose = {
 }
 
 let minePlacement = {
-    '1': 'mine',
-    '2': 'null'
+    '1': '0',
+    '2': '-1'
 }
 
 //State variables
@@ -41,7 +41,9 @@ let minePlacement = {
 //Declare board
 let board;
 //Declare timer
-let timer;
+// let timer = new Date.now().getTime();
+// let mins = Math.floor((1000 * 60 * 60) / (1000 * 60));
+// let secs = Math.floor((1000 * 60) / 1000);
 //Declare number of mines left
 let mines;
 //Declare win
@@ -51,7 +53,8 @@ let winner;
 
 //Cache score in a variable
 //Cache timer in a variable for audio association?
-const boardElem = document.querySelector('#board');
+
+// const boardElem = document.querySelector('#board');
 
 const colOneElArr = Array.from(document.querySelectorAll('#colOne > div'));
 const colTwoElArr = Array.from(document.querySelectorAll('#colTwo > div'));
@@ -63,22 +66,24 @@ const colSevenElArr = Array.from(document.querySelectorAll('#colSeven > div'));
 const colEightElArr = Array.from(document.querySelectorAll('#colEight > div'));
 const colNineElArr = Array.from(document.querySelectorAll('#colNine > div'));
 
+const boardElem = [colOneElArr, colTwoElArr, colThreeElArr, colFourElArr, colFiveElArr, colSixElArr, colSevenElArr, colEightElArr, colNineElArr];
 
 //Event Listeners
 
 //Establish a listener/function for every click on every tile
-document.querySelector('#board').addEventListener('click', tileSelect)
+document.getElementById('board').addEventListener('click', tileSelect)
     //Every click function must recursively check all
     //surrounding tiles, establish if a number, mine, or empty
     //and continue checking until complete
 function tileSelect(e) {
-    const choice = boardElem.closest('section div');
+    const choice = boardElem[e.target[e.target]];
     console.log(choice);
-    // if (choice === /*mine*/){
+    // if (choice === -1){
     //     winner = lose[youLose()];
     // } else {
     //     /*reveal the tile*/
     // }
+    render();
 }
 //Establish a listener/function for game reset
     //Game reset must call init() to re-render the initial setup
@@ -92,16 +97,20 @@ init();
 function init() {
     //Establish the board as a new/clear game
     board = [
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null]
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0]
     ];
+    for(let i=0; i < board.length; i++) {
+        let mine = minePlacement[mineRando(1,2)];
+        board[i[i]].push(mine);
+    };
     //Establish the win to null
     winner = null;
     //Invoke render()
@@ -117,11 +126,11 @@ function render() {
 //Update the mines remaining based on the last action
     //Realign the mines remaining display pending win-check
 //Update the board based on the last action
-    for(let i=0; i < boardElem.length; i++) {
-        boardElem[i].innerText = minePlacement[Math.floor(Math.random() * (2 - 1) + 1)];
-    };
 }
 
+function mineRando(min,max) {
+    return Math.random() * (max - min) + min;
+}
 
 //MINE LOGIC!!! Randomize the mines and have a function run through
 //the board. Wherever there is a mine add +1 to all surrounding
@@ -137,6 +146,17 @@ function render() {
 // } else {
 //     /*randomize the lose sequence with Math.random()*/
 // }
-function youLose(min, max) {
-    return Math.random() * (max - min) + min;
-}
+// function youLose(min, max) {
+//     return Math.random() * (max - min) + min;
+// }
+
+// let timerFunc = setInterval(function() {
+    
+// }, 1000);
+
+// if (timeleft < 0) {
+//     document.getElementById(/*endBanner*/).innerHTML = `You did a thing in ${timer}`
+//     clearInterval(timerFunc);
+//     document.getElementById('#timer').innerHTML = ''
+// }
+

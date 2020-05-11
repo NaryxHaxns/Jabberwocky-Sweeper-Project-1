@@ -31,11 +31,6 @@ let lose = {
     '3': 'You have become the latest catch of the frumious Bandersnatch!'
 }
 
-let minePlacement = {
-    '1': '0',
-    '2': '-1'
-}
-
 //State variables
 
 //Declare board
@@ -45,9 +40,11 @@ let board;
 // let mins = Math.floor((1000 * 60 * 60) / (1000 * 60));
 // let secs = Math.floor((1000 * 60) / 1000);
 //Declare number of mines left
-let mines;
+let mines = 0;
 //Declare win
 let winner;
+
+let mineIdx = [];
 
 //Cached elements
 
@@ -71,20 +68,28 @@ const boardElem = [colOneElArr, colTwoElArr, colThreeElArr, colFourElArr, colFiv
 //Event Listeners
 
 //Establish a listener/function for every click on every tile
-document.getElementById('board').addEventListener('click', tileSelect)
+document.getElementById('board').addEventListener('click', tileSelect);
     //Every click function must recursively check all
     //surrounding tiles, establish if a number, mine, or empty
     //and continue checking until complete
 function tileSelect(e) {
-    const choice = boardElem[e.target[e.target]];
-    console.log(choice);
-    // if (choice === -1){
-    //     winner = lose[youLose()];
-    // } else {
-    //     /*reveal the tile*/
-    // }
+    let clIdxRow = e.target.getAttribute('row');
+    let clIdxCol = e.target.getAttribute('col');
+    if (board[clIdxRow][clIdxCol] !== -1){
+        boardElem[clIdxCol][clIdxRow].innerText = board[clIdxRow][clIdxCol];
+    } else {
+        winner = lose[youLose(1,4)];
+        console.log(winner);
+    }
     render();
 }
+
+// document.querySelectorAll('.tile').addEventListener('contextmenu', flagClick);
+
+// function flagClick(e) {
+//     e.preventDefault();
+// }
+
 //Establish a listener/function for game reset
     //Game reset must call init() to re-render the initial setup
 //Establish a listener/function for audio manipulation
@@ -107,29 +112,74 @@ function init() {
         [0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0]
     ];
-    for(let i=0; i < board.length; i++) {
-        let mine = minePlacement[mineRando(1,2)];
-        board[i[i]].push(mine);
-    };
+    mineIdxGrab();
+    minePlace();
+    addOne();
     //Establish the win to null
     winner = null;
     //Invoke render()
     render();
-}
+};
 
 //Render
 function render() {
-//Update win based on mine or no mine clicked
+    //Update win based on mine or no mine clicked
     //If mine display lose sequence
     //If win display win sequence
     //If neither continue playing
-//Update the mines remaining based on the last action
+    //Update the mines remaining based on the last action
     //Realign the mines remaining display pending win-check
-//Update the board based on the last action
-}
+    //Update the board based on the last action
+
+};
+
+function minePlace() {
+    for(i=0; i < mineIdx.length; i++) {
+        board[mineIdx[i][0]][mineIdx[i][1]] = -1;
+    };
+};
+
+function mineIdxGrab() {
+    for(let i=0; i < 10; i++) {
+        let mine = [mineRando(0,8), mineRando(0,8)];
+        mineIdx.push(mine);
+    };
+};
 
 function mineRando(min,max) {
-    return Math.random() * (max - min) + min;
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function addOne() {
+    console.log(board)
+    for(i=0; i < board.length; i++) {
+        for(j=0; j < board[i].length; j++) {
+            if (board[i][j] === -1) {
+                if(board[i - 1]) {
+                    board[i - 1][j] !== -1 ? board[i - 1][j] += 1 : '';
+                    board[i - 1][j + 1] !== -1 ? board[i - 1][j + 1] += 1 : '';
+                    if(j !== 0) {
+                        board[i - 1][j - 1] !== -1 ? board[i - 1][j - 1] += 1 : '';
+                    };
+                };
+                if(board[i + 1]) {
+                    board[i + 1][j] !== -1 ? board[i + 1][j] += 1 : '';
+                    board[i + 1][j + 1] !== -1 ? board[i + 1][j + 1] += 1 : '';
+                    if(j !== 0) {
+                        board[i + 1][j - 1] !== -1 ? board[i + 1][j - 1] += 1 : '';
+                    };
+                };
+                board[i][j + 1] !== -1 ? board[i][j + 1] += 1 : '';
+                if(j !== 0) {
+                    board[i][j - 1] !== -1 ? board[i][j - 1] += 1 : '';
+                };
+            };
+        };
+    };
+};
+
+function youLose(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
 }
 
 //MINE LOGIC!!! Randomize the mines and have a function run through
@@ -142,12 +192,9 @@ function mineRando(min,max) {
 //lose object for randomized loss messaging lose[math.random()
 //function name]
 // if (winner) {
-//     /*create absolute message over page that reads*/ = 'And hast thou slain the Jabberwock? O frabjous day! Callooh! Callay!'
+//     winMsg();
 // } else {
 //     /*randomize the lose sequence with Math.random()*/
-// }
-// function youLose(min, max) {
-//     return Math.random() * (max - min) + min;
 // }
 
 // let timerFunc = setInterval(function() {
@@ -160,3 +207,11 @@ function mineRando(min,max) {
 //     document.getElementById('#timer').innerHTML = ''
 // }
 
+//Creating the absolute element
+function winMsg() {
+    let winScroll = document.createElement('div');
+    winScroll.id = 'abMsg'
+    let winMes = document.createTextNode('And hast thou slain the Jabberwock? O frabjous day! Callooh! Callay!');
+    winScroll.appendChild(winMes);
+    //It's created but how to make it absolute to the board/screen?
+}

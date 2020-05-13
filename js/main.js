@@ -288,16 +288,29 @@ function zeroVoid(clIdxRow,clIdxCol) {
             checkAround(clIdxRow,clIdxCol);
             // if(checked.includes([clIdxRow,clIdxCol]) === false) {
                 console.log(validSpots);
+                // let temporaryValidSpots = validSpots;
+                let temporaryValidSpots = [];
+                validSpots.forEach(e => {
+                    temporaryValidSpots.push(e);
+                })
                 debugger;
                 // for(i = 0; i < validSpots.length; i++) {
                     while(validSpots.length) {
                         let firstEl = validSpots.pop();
-                        // if(board[firstEl[0]][firstEl[1]] === 0) {
+                        if(board[firstEl[0]][firstEl[1]] === 0) {
                         //     zeroVoid(firstEl[0],firstEl[1]);
-                        // } else {
+                        boardElem[firstEl[1]][firstEl[0]].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
+                        } else {
                             boardElem[firstEl[1]][firstEl[0]].innerText = board[firstEl[0]][firstEl[1]];
-                        // };
+                        };
                     };
+                for(i = 0; i < temporaryValidSpots.length; i++) {
+                    console.log('hitting ', i)
+                    if(board[temporaryValidSpots[i][0]][temporaryValidSpots[i][1]] == 0) {
+                        let piece = temporaryValidSpots.shift();
+                        zeroVoid(piece[0],piece[1])
+                    }
+                }
                 // };
             // } else {
             //     return;

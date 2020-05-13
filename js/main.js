@@ -35,6 +35,10 @@ let checked = [];
 
 let validSpots = [];
 
+let recursiveValidSpots = [];
+
+let allValidSpots = [];
+
 //End Game Message
 let gameOver = document.querySelector('.endGame');
 
@@ -265,7 +269,7 @@ function checkWinLose() {
 function checkAround(x,y) {
     x = Number(x);
     y = Number(y);
-    // validSpots = [];
+    validSpots = [];
     if(x > 0 && y > 0) validSpots.push([x - 1, y - 1]);
     if(x > 0) validSpots.push([x - 1, y]);
     if(x > 0 && y < 8) validSpots.push([x - 1, y + 1]);
@@ -289,9 +293,18 @@ function zeroVoid(clIdxRow,clIdxCol) {
             // if(checked.includes([clIdxRow,clIdxCol]) === false) {
                 console.log(validSpots);
                 // let temporaryValidSpots = validSpots;
-                let temporaryValidSpots = [];
+                // let temporaryValidSpots = [];
                 validSpots.forEach(e => {
-                    temporaryValidSpots.push(e);
+                    allValidSpots.push(e);
+                    let spot = e.toString();
+                    let recursiveString = recursiveValidSpots.toString();
+                    let allValidString = allValidSpots.toString();
+                    if(allValidString.includes(spot)) {
+
+                    } else {
+                        recursiveValidSpots.push(e);
+                    }
+                    // temporaryValidSpots.push(e);
                 })
                 debugger;
                 // for(i = 0; i < validSpots.length; i++) {
@@ -304,10 +317,12 @@ function zeroVoid(clIdxRow,clIdxCol) {
                             boardElem[firstEl[1]][firstEl[0]].innerText = board[firstEl[0]][firstEl[1]];
                         };
                     };
-                for(i = 0; i < temporaryValidSpots.length; i++) {
+                // for(i = 0; i < recursiveValidSpots.length; i++) {
+                while(recursiveValidSpots.length) {
                     console.log('hitting ', i)
-                    if(board[temporaryValidSpots[i][0]][temporaryValidSpots[i][1]] == 0) {
-                        let piece = temporaryValidSpots.shift();
+                    let piece = recursiveValidSpots.shift();
+                    if(board[piece[0]][piece[1]] == 0) {
+                        // recursiveValidSpots.shift();
                         zeroVoid(piece[0],piece[1])
                     }
                 }

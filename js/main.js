@@ -24,7 +24,7 @@
 
 //Define audio file variables
 //Define animation images/files
-//Define player structure?
+
 let lose = {
     '1': 'The Jabberwock caught you in its claws and bit you with its jaws!',
     '2': 'The Jubjub bird swooped down and plucked you from the ground!',
@@ -45,6 +45,11 @@ let mines = 0;
 let winner;
 
 let mineIdx = [];
+
+let checked = [];
+
+let validSpots = [];
+
 
 //Cached elements
 
@@ -75,9 +80,23 @@ document.getElementById('board').addEventListener('click', tileSelect);
 function tileSelect(e) {
     let clIdxRow = e.target.getAttribute('row');
     let clIdxCol = e.target.getAttribute('col');
-    if (board[clIdxRow][clIdxCol] !== -1){
+    if(board[clIdxRow][clIdxCol] !== -1){
+        if(board[clIdxRow][clIdxCol] === 0) {
+            boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
+            zeroVoid(clIdxRow, clIdxCol);
+            return;
+        }
         boardElem[clIdxCol][clIdxRow].innerText = board[clIdxRow][clIdxCol];
     } else {
+        //another for loop for non-click mine images
+        for(i = 0; i < board.length; i++){
+            for(j = 0; j < board[i].length; j++){
+                if(board[i][j] === -1){
+                    boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/mineOther.jpg); background-size: cover;')
+                }
+            }
+            boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/mine.jpg); background-size: cover;');
+        }
         winner = lose[youLose(1,4)];
         console.log(winner);
     }
@@ -152,23 +171,30 @@ function mineRando(min,max) {
 
 function addOne() {
     console.log(board)
+    //FOR for both row and column iteration location
     for(i=0; i < board.length; i++) {
         for(j=0; j < board[i].length; j++) {
+            //IF the iteration at [i][j] is a mine
             if (board[i][j] === -1) {
+                //Checking directionals N and NE
                 if(board[i - 1]) {
                     board[i - 1][j] !== -1 ? board[i - 1][j] += 1 : '';
                     board[i - 1][j + 1] !== -1 ? board[i - 1][j + 1] += 1 : '';
+                    //Checking directional NW
                     if(j !== 0) {
                         board[i - 1][j - 1] !== -1 ? board[i - 1][j - 1] += 1 : '';
                     };
                 };
+                //Checking directionals S and SE
                 if(board[i + 1]) {
                     board[i + 1][j] !== -1 ? board[i + 1][j] += 1 : '';
                     board[i + 1][j + 1] !== -1 ? board[i + 1][j + 1] += 1 : '';
+                    //Checking directional SW
                     if(j !== 0) {
                         board[i + 1][j - 1] !== -1 ? board[i + 1][j - 1] += 1 : '';
                     };
                 };
+                //Checking directionals E and W
                 board[i][j + 1] !== -1 ? board[i][j + 1] += 1 : '';
                 if(j !== 0) {
                     board[i][j - 1] !== -1 ? board[i][j - 1] += 1 : '';
@@ -215,3 +241,76 @@ function winMsg() {
     winScroll.appendChild(winMes);
     //It's created but how to make it absolute to the board/screen?
 }
+
+//Creating recursive 0 scan to open the void
+function zeroVoid(x, y) {
+    let spots = checkAround(x,y);
+    if(checked.length === 0) checked.push([Number(x), Number(y)]);
+    let newPair = false;
+    function checkForNewPair() {
+        for(let i = 0; i < checked.length; i++) {
+            if(checked[i][0] !== Number(x) && checked[i][1] !== Number(y)) {
+            } else {
+                return newPair;
+            }
+        }
+        newPair = true;
+        return newPair;
+    }
+    checkForNewPair();
+    debugger;
+    if(newPair) checked.push([Number(x), Number(y)])
+    else return;
+    console.log(checked);
+    if(board[x][y] !== 0) {
+        return;
+    } else {
+        for(let i = 0; i < spots.length; i++) {
+            // for(let j = 0; j < checked.length; j++){
+                // if(checked[j][0] !== spots[i][0] && checked[j][1] !== spots[i][1]) {
+                    if(board[spots[i][0]][spots[i][1]] === 0) {
+                        console.log('calling zeroVoid ', spots[i][0], spots[i][1]);
+                        // checked.push();
+                        zeroVoid(spots[i][0], spots[i][1]);
+                    }
+                // }
+            // }
+            console.log(board[spots[i][0]][spots[i][1]]);
+        }
+    };
+    // zeroVoid(x, y);
+}
+
+function checkAround(x,y) {
+    validSpots = [];
+    x = Number(x);
+    y = Number(y);
+    if(x < 8 && x > 0) {
+        if(y < 8 && y > 0) {
+            validSpots.push([x - 1, y - 1]);
+            validSpots.push([x - 1, y]);
+            validSpots.push([x - 1, y + 1]);
+            validSpots.push([x, y - 1]);
+            validSpots.push([x, y + 1]);
+            validSpots.push([x + 1, y - 1]);
+            validSpots.push([x + 1, y]);
+            validSpots.push([x + 1, y + 1]);
+        }
+    }
+    return validSpots;
+}
+
+// function zeroVoid(index) {
+//     if(index !== 0) return;
+//     if(index === 0){
+//         boardElem[index - 1][index] = board[index - 1][index];
+//         boardElem[index - 1][index + 1] = board[index - 1][index + 1];
+//         boardElem[index - 1][index - 1] = board[index - 1][index - 1];
+//         boardElem[index + 1][index] = board[index + 1][index];
+//         boardElem[index + 1][index - 1] = board[index + 1][index - 1];
+//         boardElem[index + 1][index + 1] = board[index + 1][index + 1];
+//         boardElem[index][index - 1] = board[index][index - 1];
+//         boardElem[index][index + 1] = board[index][index + 1];
+//     }
+//     zeroVoid(index);
+// }

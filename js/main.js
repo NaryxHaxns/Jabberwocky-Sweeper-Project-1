@@ -36,7 +36,6 @@ let lose = {
 //Declare board
 let board;
 //Declare timer
-// let timer = new Date.now().getTime();
 // let mins = Math.floor((1000 * 60 * 60) / (1000 * 60));
 // let secs = Math.floor((1000 * 60) / 1000);
 //Declare number of mines left
@@ -50,6 +49,7 @@ let checked = [];
 
 let validSpots = [];
 
+let elapsedTime;
 
 //Cached elements
 
@@ -103,11 +103,10 @@ function tileSelect(e) {
     render();
 }
 
-// document.querySelectorAll('.tile').addEventListener('contextmenu', flagClick);
-
-// function flagClick(e) {
-//     e.preventDefault();
-// }
+document.oncontextmenu = function(e) {
+    e.target.setAttribute('style', 'background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/flag.png); background-size: cover;')
+    return false;
+}
 
 //Establish a listener/function for game reset
     //Game reset must call init() to re-render the initial setup
@@ -134,6 +133,7 @@ function init() {
     mineIdxGrab();
     minePlace();
     addOne();
+    numMines();
     //Establish the win to null
     winner = null;
     //Invoke render()
@@ -233,6 +233,24 @@ function youLose(min, max) {
 //     document.getElementById('#timer').innerHTML = ''
 // }
 
+let timerFunc = setInterval(timerClock, 1000);
+
+let begin = 0;
+
+function timerClock() {
+    let timer = timerFunc;
+    document.querySelector('.timer').innerHTML = begin;
+    begin++;
+    if(tileSelect === true) {
+        return timer;
+    }
+}
+
+function numMines() {
+    mines = mineIdx.length;
+    document.querySelector('.mines').innerHTML = mines;
+}
+
 //Creating the absolute element
 function winMsg() {
     let winScroll = document.createElement('div');
@@ -285,32 +303,13 @@ function checkAround(x,y) {
     validSpots = [];
     x = Number(x);
     y = Number(y);
-    if(x < 8 && x > 0) {
-        if(y < 8 && y > 0) {
-            validSpots.push([x - 1, y - 1]);
-            validSpots.push([x - 1, y]);
-            validSpots.push([x - 1, y + 1]);
-            validSpots.push([x, y - 1]);
-            validSpots.push([x, y + 1]);
-            validSpots.push([x + 1, y - 1]);
-            validSpots.push([x + 1, y]);
-            validSpots.push([x + 1, y + 1]);
-        }
-    }
+    if(x > 0 && y > 0) validSpots.push([x - 1, y - 1]);
+    if(x > 0) validSpots.push([x - 1, y]);
+    if(x > 0 && y < 8) validSpots.push([x - 1, y + 1]);
+    if(y > 0) validSpots.push([x, y - 1]);
+    if(y < 8) validSpots.push([x, y + 1]);
+    if(x < 8 && y > 0) validSpots.push([x + 1, y - 1]);
+    if(x < 8) validSpots.push([x + 1, y]);
+    if(x < 8 && y < 8) validSpots.push([x + 1, y + 1]);
     return validSpots;
 }
-
-// function zeroVoid(index) {
-//     if(index !== 0) return;
-//     if(index === 0){
-//         boardElem[index - 1][index] = board[index - 1][index];
-//         boardElem[index - 1][index + 1] = board[index - 1][index + 1];
-//         boardElem[index - 1][index - 1] = board[index - 1][index - 1];
-//         boardElem[index + 1][index] = board[index + 1][index];
-//         boardElem[index + 1][index - 1] = board[index + 1][index - 1];
-//         boardElem[index + 1][index + 1] = board[index + 1][index + 1];
-//         boardElem[index][index - 1] = board[index][index - 1];
-//         boardElem[index][index + 1] = board[index][index + 1];
-//     }
-//     zeroVoid(index);
-// }

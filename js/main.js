@@ -1,30 +1,6 @@
-//Welcome message/Rules/gameplay instructions message
-
-//Selection of board size (9x9/10, 16x16/40, 16x30/99)
-
-//A start button
-
-//A timer
-
-//Number of mines left
-
-//Log high scores with window.localStorage
-
-//Interval beeps or timer notifications on milestone times
-
-//Render the board based on size selected
-
-//Randomize the board/mines
-
-//Recursive click logic
-
-/*-----------------ideas above, pseudocode below-----------------*/
-
 //Constants
 
-//Define audio file variables
-//Define animation images/files
-
+//Lose Object to randomize failure messages
 let lose = {
     '1': 'The Jabberwock caught you in its claws and bit you with its jaws!',
     '2': 'The Jubjub bird swooped down and plucked you from the ground!',
@@ -35,29 +11,36 @@ let lose = {
 
 //Declare board
 let board;
-//Declare timer
-// let mins = Math.floor((1000 * 60 * 60) / (1000 * 60));
-// let secs = Math.floor((1000 * 60) / 1000);
+
+//Declare timer and clock initialization variables
+let timerFunc = setInterval(timerClock, 1000);
+
+let begin = 0;
+
 //Declare number of mines left
-let mines = 0;
+let mines;
+
 //Declare win
 let winner;
 
+let youWin;
+
+let loser;
+
+//Empty Array for mine logic
 let mineIdx = [];
 
+//Arrays for recursive logic
 let checked = [];
 
 let validSpots = [];
 
-let elapsedTime;
+//End Game Message
+let gameOver = document.querySelector('.endGame');
 
 //Cached elements
 
-//Cache score in a variable
-//Cache timer in a variable for audio association?
-
-// const boardElem = document.querySelector('#board');
-
+//Column Arrays of the HTML board elements
 const colOneElArr = Array.from(document.querySelectorAll('#colOne > div'));
 const colTwoElArr = Array.from(document.querySelectorAll('#colTwo > div'));
 const colThreeElArr = Array.from(document.querySelectorAll('#colThree > div'));
@@ -68,51 +51,35 @@ const colSevenElArr = Array.from(document.querySelectorAll('#colSeven > div'));
 const colEightElArr = Array.from(document.querySelectorAll('#colEight > div'));
 const colNineElArr = Array.from(document.querySelectorAll('#colNine > div'));
 
+//An array of column Arrays creating an accessible board of Elements
 const boardElem = [colOneElArr, colTwoElArr, colThreeElArr, colFourElArr, colFiveElArr, colSixElArr, colSevenElArr, colEightElArr, colNineElArr];
 
 //Event Listeners
 
 //Establish a listener/function for every click on every tile
 document.getElementById('board').addEventListener('click', tileSelect);
-    //Every click function must recursively check all
-    //surrounding tiles, establish if a number, mine, or empty
-    //and continue checking until complete
+   
 function tileSelect(e) {
     let clIdxRow = e.target.getAttribute('row');
     let clIdxCol = e.target.getAttribute('col');
-    if(board[clIdxRow][clIdxCol] !== -1){
-        if(board[clIdxRow][clIdxCol] === 0) {
-            boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
-            zeroVoid(clIdxRow, clIdxCol);
-            return;
-        }
-        boardElem[clIdxCol][clIdxRow].innerText = board[clIdxRow][clIdxCol];
-    } else {
-        //another for loop for non-click mine images
+    if(board[clIdxRow][clIdxCol] === -1){
+        winner = loser;
         for(i = 0; i < board.length; i++){
             for(j = 0; j < board[i].length; j++){
                 if(board[i][j] === -1){
-                    boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/mineOther.jpg); background-size: cover;')
+                    boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(https://i.imgur.com/dNjBu6E.jpg); background-size: cover;')
                 }
+                boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(https://i.imgur.com/DG8VfK0.jpg); background-size: cover;');
             }
-            boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/mine.jpg); background-size: cover;');
         }
-        winner = lose[youLose(1,4)];
-        console.log(winner);
-    }
+    } else {
+        zeroVoid(clIdxRow, clIdxCol);
+    };
     render();
-}
-
-document.oncontextmenu = function(e) {
-    e.target.setAttribute('style', 'background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/flag.png); background-size: cover;')
-    return false;
-}
+};
 
 //Establish a listener/function for game reset
-    //Game reset must call init() to re-render the initial setup
-//Establish a listener/function for audio manipulation
-    //Audio manipulation function must associate audio controls
-    //as well as bridge files to reaction sounds
+document.querySelector('button').addEventListener('click', init);
 
 //Initialization
 init();
@@ -130,6 +97,7 @@ function init() {
         [0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0]
     ];
+    //Process mine and numeric logic
     mineIdxGrab();
     minePlace();
     addOne();
@@ -149,15 +117,15 @@ function render() {
     //Update the mines remaining based on the last action
     //Realign the mines remaining display pending win-check
     //Update the board based on the last action
-
+    checkWinLose();
 };
 
-function minePlace() {
-    for(i=0; i < mineIdx.length; i++) {
-        board[mineIdx[i][0]][mineIdx[i][1]] = -1;
-    };
-};
+//Randomize indices for mines
+function mineRando(min,max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
 
+//Creating an Array of indices and storing them for placement
 function mineIdxGrab() {
     for(let i=0; i < 10; i++) {
         let mine = [mineRando(0,8), mineRando(0,8)];
@@ -165,10 +133,15 @@ function mineIdxGrab() {
     };
 };
 
-function mineRando(min,max) {
-    return Math.floor(Math.random() * (max - min) + min);
-}
+//Placing mines throughout the board from the mineIdx array
+function minePlace() {
+    for(i=0; i < mineIdx.length; i++) {
+        board[mineIdx[i][0]][mineIdx[i][1]] = -1;
+    };
+};
 
+//Checking where in the board there is a mine and adding 1 to the 
+//value of all surrounding tiles
 function addOne() {
     console.log(board)
     //FOR for both row and column iteration location
@@ -204,39 +177,7 @@ function addOne() {
     };
 };
 
-function youLose(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-}
-
-//MINE LOGIC!!! Randomize the mines and have a function run through
-//the board. Wherever there is a mine add +1 to all surrounding
-//squares. This will auto-generate the void and numbers.
-//Cycle through each row/col and place one mine (2 for one of them)
-//in order to spread out the mines to avoid clusters
-
-//Win logic - use Math.random() to pull a lose message from the 
-//lose object for randomized loss messaging lose[math.random()
-//function name]
-// if (winner) {
-//     winMsg();
-// } else {
-//     /*randomize the lose sequence with Math.random()*/
-// }
-
-// let timerFunc = setInterval(function() {
-    
-// }, 1000);
-
-// if (timeleft < 0) {
-//     document.getElementById(/*endBanner*/).innerHTML = `You did a thing in ${timer}`
-//     clearInterval(timerFunc);
-//     document.getElementById('#timer').innerHTML = ''
-// }
-
-let timerFunc = setInterval(timerClock, 1000);
-
-let begin = 0;
-
+//Set up the timer start and stop functions
 function timerClock() {
     let timer = timerFunc;
     document.querySelector('.timer').innerHTML = begin;
@@ -246,63 +187,85 @@ function timerClock() {
     }
 }
 
+function timerStop() {
+    clearInterval(timerFunc);
+}
+
+//Display number of mines on the board
 function numMines() {
-    mines = mineIdx.length;
+    mines = 10;
     document.querySelector('.mines').innerHTML = mines;
 }
 
-//Creating the absolute element
-function winMsg() {
-    let winScroll = document.createElement('div');
-    winScroll.id = 'abMsg'
-    let winMes = document.createTextNode('And hast thou slain the Jabberwock? O frabjous day! Callooh! Callay!');
-    winScroll.appendChild(winMes);
-    //It's created but how to make it absolute to the board/screen?
+//Disable On Context Menu and place a flag on right click/control-click
+document.oncontextmenu = function(e) {
+    e.target.setAttribute('style', 'background-image: url(https://i.imgur.com/5ONOFFi.png); background-size: cover;')
+    return false;
+}
+
+//Sequence to randomize one of three failure messages
+function youLose(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+//Win logic
+function checkWinLose() {
+    if(winner === loser) {
+        timerStop();
+        document.getElementById('board').removeEventListener('click', tileSelect);
+        gameOver.setAttribute('style', 'visibility: visible;')
+        gameOver.innerHTML = lose[youLose(1,4)];
+    } else if(winner === youWin) {
+        timerStop();
+        document.getElementById('board').removeEventListener('click', tileSelect);
+        gameOver.setAttribute('style', 'visibility: visible;')
+        gameOver.innerHTML = 'And hast thou slain the Jabberwock? O frabjous day! Callooh! Callay!';
+    }
 }
 
 //Creating recursive 0 scan to open the void
-function zeroVoid(x, y) {
-    let spots = checkAround(x,y);
-    if(checked.length === 0) checked.push([Number(x), Number(y)]);
-    let newPair = false;
-    function checkForNewPair() {
-        for(let i = 0; i < checked.length; i++) {
-            if(checked[i][0] !== Number(x) && checked[i][1] !== Number(y)) {
-            } else {
-                return newPair;
-            }
-        }
-        newPair = true;
-        return newPair;
-    }
-    checkForNewPair();
-    debugger;
-    if(newPair) checked.push([Number(x), Number(y)])
-    else return;
-    console.log(checked);
-    if(board[x][y] !== 0) {
-        return;
-    } else {
-        for(let i = 0; i < spots.length; i++) {
-            // for(let j = 0; j < checked.length; j++){
-                // if(checked[j][0] !== spots[i][0] && checked[j][1] !== spots[i][1]) {
-                    if(board[spots[i][0]][spots[i][1]] === 0) {
-                        console.log('calling zeroVoid ', spots[i][0], spots[i][1]);
-                        // checked.push();
-                        zeroVoid(spots[i][0], spots[i][1]);
-                    }
-                // }
-            // }
-            console.log(board[spots[i][0]][spots[i][1]]);
-        }
-    };
-    // zeroVoid(x, y);
-}
+// function zeroVoid(x, y) {
+//     let spots = checkAround(x,y);
+//     if(checked.length === 0) checked.push([Number(x), Number(y)]);
+//     let newPair = false;
+//     function checkForNewPair() {
+//         for(let i = 0; i < checked.length; i++) {
+//             if(checked[i][0] !== Number(x) && checked[i][1] !== Number(y)) {
+//             } else {
+//                 return newPair;
+//             }
+//         }
+//         newPair = true;
+//         return newPair;
+//     }
+//     checkForNewPair();
+//     debugger;
+//     if(newPair) checked.push([Number(x), Number(y)])
+//     else return;
+//     console.log(checked);
+//     if(board[x][y] !== 0) {
+//         return;
+//     } else {
+//         for(let i = 0; i < spots.length; i++) {
+//             // for(let j = 0; j < checked.length; j++){
+//                 // if(checked[j][0] !== spots[i][0] && checked[j][1] !== spots[i][1]) {
+//                     if(board[spots[i][0]][spots[i][1]] === 0) {
+//                         console.log('calling zeroVoid ', spots[i][0], spots[i][1]);
+//                         // checked.push();
+//                         zeroVoid(spots[i][0], spots[i][1]);
+//                     }
+//                 // }
+//             // }
+//             console.log(board[spots[i][0]][spots[i][1]]);
+//         }
+//     };
+//     // zeroVoid(x, y);
+// }
 
 function checkAround(x,y) {
-    validSpots = [];
     x = Number(x);
     y = Number(y);
+    // validSpots = [];
     if(x > 0 && y > 0) validSpots.push([x - 1, y - 1]);
     if(x > 0) validSpots.push([x - 1, y]);
     if(x > 0 && y < 8) validSpots.push([x - 1, y + 1]);
@@ -312,4 +275,34 @@ function checkAround(x,y) {
     if(x < 8) validSpots.push([x + 1, y]);
     if(x < 8 && y < 8) validSpots.push([x + 1, y + 1]);
     return validSpots;
-}
+};
+
+function zeroVoid(clIdxRow,clIdxCol) {
+    checked.push([clIdxRow,clIdxCol]);
+    if(board[clIdxRow][clIdxCol] > 0){
+        boardElem[clIdxCol][clIdxRow].innerText = board[clIdxRow][clIdxCol];
+        return;
+    } else {
+        if(board[clIdxRow][clIdxCol] === 0) {
+            boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
+            checkAround(clIdxRow,clIdxCol);
+            // if(checked.includes([clIdxRow,clIdxCol]) === false) {
+                console.log(validSpots);
+                debugger;
+                // for(i = 0; i < validSpots.length; i++) {
+                    while(validSpots.length) {
+                        let firstEl = validSpots.pop();
+                        // if(board[firstEl[0]][firstEl[1]] === 0) {
+                        //     zeroVoid(firstEl[0],firstEl[1]);
+                        // } else {
+                            boardElem[firstEl[1]][firstEl[0]].innerText = board[firstEl[0]][firstEl[1]];
+                        // };
+                    };
+                // };
+            // } else {
+            //     return;
+            // };
+        };
+    };
+};
+

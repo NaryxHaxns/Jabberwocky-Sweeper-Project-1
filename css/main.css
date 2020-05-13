@@ -5,7 +5,7 @@ body {
     justify-content: space-evenly;
     align-items: center;
     position: relative;
-    background-image: url(/Users/ryannash/code/Jabberwocky-Sweeper-Project-1/Pictures/bgimage.jpg);
+    background-image: url(https://i.imgur.com/8YhQ9Yc.jpg);
     background-position: center;
     background-size: cover;
 }
@@ -14,6 +14,32 @@ h1 {
     position: absolute;
     align-self: flex-start;
     margin-top: 100px;
+    text-shadow: 5px 5px 20px rgba(206,187,189,.5);
+}
+
+.endGame {
+    font-family: 'Lovers Quarrel', cursive;
+    font-size: 60px;
+    position: absolute;
+    align-self: center;
+    height: 400px;
+    width: 400px;
+    padding: 10px;
+    padding-left: 75px;
+    border-radius: 5px 75px 5px;
+    background-image: url(https://i.imgur.com/HntJYxt.jpg);
+    background-size: cover;
+    text-align: center;
+    visibility: hidden;
+}
+
+button {
+    font-family: 'Lovers Quarrel', cursive;
+    font-size: 25px;
+    background: transparent;
+    height: 60px;
+    width: 120px;
+    text-align: center;
 }
 
 .timer, .mines {

@@ -17,7 +17,7 @@ ______________________________________________________________________
 Game Board:
 ![Game Board](https://i.imgur.com/ASf4LnV.png)
 
-Gameplay with mine:
+Gameplay with mine flag:
 ![Gameplay with mine](https://i.imgur.com/zeuhnmz.png)
 
 Failure message example:

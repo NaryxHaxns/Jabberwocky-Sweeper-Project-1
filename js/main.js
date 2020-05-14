@@ -122,16 +122,22 @@ function init() {
 function render() {
     //Update win based on mine or no mine clicked
     checkWinLose();
+    let tempWin = true;
     for(i = 0; i < winBoard.length; i++) {
         for(j = 0; j < winBoard[i].length; j++) {
-            isWin = winBoard.every(function (){
-                return isWin;
-            });
-            if(isWin === true) {
-                winner = youWin;
-            };
+            if(winBoard[i][j] == false) {
+                tempWin = false;
+            }
         };
     };
+    console.log(tempWin)
+    console.log(winBoard)
+    if(tempWin) {
+        timerStop();
+        document.getElementById('board').removeEventListener('click', tileSelect);
+        gameOver.setAttribute('style', 'visibility: visible;')
+        gameOver.innerHTML = 'And hast thou slain the Jabberwock? O frabjous day! Callooh! Callay!';
+    }
     //Update the mines remaining based on the last action
     numMines();
 };
@@ -143,9 +149,11 @@ function mineRando(min,max) {
 
 //Creating an Array of indices and storing them for placement
 function mineIdxGrab() {
-    for(let i=0; i < 10; i++) {
+    for(let i=0; i < 10 || mineIdx.length < 10; i++) {
         let mine = [mineRando(0,8), mineRando(0,8)];
-        mineIdx.push(mine);
+        if(!mineIdx.toString().includes(mine.toString())) {
+            mineIdx.push(mine);
+        }
     };
 };
 

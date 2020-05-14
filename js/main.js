@@ -39,6 +39,8 @@ let recursiveValidSpots = [];
 
 let allValidSpots = [];
 
+let storedSpots = [];
+
 //End Game Message
 let gameOver = document.querySelector('.endGame');
 
@@ -278,6 +280,7 @@ function checkAround(x,y) {
     if(x < 8 && y > 0) validSpots.push([x + 1, y - 1]);
     if(x < 8) validSpots.push([x + 1, y]);
     if(x < 8 && y < 8) validSpots.push([x + 1, y + 1]);
+    console.log(validSpots);
     return validSpots;
 };
 
@@ -290,56 +293,48 @@ function zeroVoid(clIdxRow,clIdxCol) {
         if(board[clIdxRow][clIdxCol] === 0) {
             boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
             checkAround(clIdxRow,clIdxCol);
-            // if(checked.includes([clIdxRow,clIdxCol]) === false) {
-                console.log(allValidSpots);
-                // let temporaryValidSpots = validSpots;
-                // let temporaryValidSpots = [];
-                validSpots.forEach(e => {
-                    let spot = e.toString();
-                    let recursiveString = recursiveValidSpots.toString();
-                    let allValidString = allValidSpots.toString();
-                    if(allValidString.includes(spot)) {
-                        
-                    } else {
-                        recursiveValidSpots.push(e);
-                        allValidSpots.push(e);
-                    }
-                    // temporaryValidSpots.push(e);
+            console.log(allValidSpots);
+            validSpots.forEach(e => {
+                let spot = e.toString();
+                let recursiveString = recursiveValidSpots.toString();
+                let allValidString = allValidSpots.toString();
+                if(allValidString.includes(spot)) {
+                            
+                } else {
+                    recursiveValidSpots.push(e);
+                    allValidSpots.push(e);
+                };
+            });
+            while(validSpots.length) {
+                let firstEl = validSpots.pop();
+                if(board[firstEl[0]][firstEl[1]] === 0) {
+                    boardElem[firstEl[1]][firstEl[0]].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
+                } else {
+                    boardElem[firstEl[1]][firstEl[0]].innerText = board[firstEl[0]][firstEl[1]];
+                };
+            };
+            while(recursiveValidSpots.length) {
+                console.log('hitting ', i);
+                let piece = recursiveValidSpots.shift();
+                zeroVoid(piece[0],piece[1]);
+            }
+            if(validSpots.length === 0 && recursiveValidSpots.length === 0) {
+                allValidSpots.map(e => {
+                    storedSpots.push(e);
                 })
-                // debugger;
-                // for(i = 0; i < validSpots.length; i++) {
-                    while(validSpots.length) {
-                        let firstEl = validSpots.pop();
-                        if(board[firstEl[0]][firstEl[1]] === 0) {
-                        //     zeroVoid(firstEl[0],firstEl[1]);
-                        boardElem[firstEl[1]][firstEl[0]].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
-                        } else {
-                            boardElem[firstEl[1]][firstEl[0]].innerText = board[firstEl[0]][firstEl[1]];
-                        };
+                while(allValidSpots.length) {
+                    let piece = allValidSpots.shift();
+                    let element = document.getElementById(`c${piece[1] + 1}r${piece[0] + 1}`);
+                    if(element.style.backgroundColor) {
+                        console.log('hitting style', piece, element);
                     };
-                // for(i = 0; i < recursiveValidSpots.length; i++) {
-                while(recursiveValidSpots.length) {
-                    console.log('hitting ', i)
-                    let piece = recursiveValidSpots.shift();
-                    // if(board[piece[0]][piece[1]] == 0) {
-                        // recursiveValidSpots.shift();
-                        zeroVoid(piece[0],piece[1])
-                    // }
                 }
-                if(validSpots.length === 0 && recursiveValidSpots.length === 0) {
-                    while(allValidSpots.length) {
-                        let piece = allValidSpots.shift();
-                        let element = document.getElementById(`c${piece[1] + 1}r${piece[0] + 1}`);
-                        console.log(piece, element.textContent, element.style.backgroundColor);
-                        if(element.textContent == '' && element.style.backgroundColor == '') {
-                            console.log(piece, element);
-                        }
-                    }
-                }
-                // };
-            // } else {
-            //     return;
-            // };
+                while(storedSpots.length) {
+                    let piece = storedSpots.shift();
+                    let element = document.getElementById(`c${piece[1] + 1}r${piece[0] + 1}`);
+                    console.log(piece, element.textContent, element.style.backgroundColor);
+                };
+            };
         };
     };
 };

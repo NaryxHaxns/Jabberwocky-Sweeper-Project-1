@@ -12,6 +12,9 @@ let lose = {
 //Declare board
 let board;
 
+//Declare true/false board
+// let winBoard;
+
 //Declare timer and clock initialization variables
 let timerFunc = setInterval(timerClock, 1000);
 
@@ -88,6 +91,18 @@ function init() {
         [0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0]
     ];
+    //Establish true/false board for win logic
+    // winBoard = [
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false],
+    //     [false,false,false,false,false,false,false,false,false]
+    // ]
     //Process mine and numeric logic
     mineIdxGrab();
     minePlace();
@@ -95,21 +110,21 @@ function init() {
     numMines();
     //Establish the win to null
     winner = null;
-    //Invoke render()
     gameOver.setAttribute('style', 'visibility: hidden;');
+    //Invoke render()
     render();
 };
 
 //Render
 function render() {
     //Update win based on mine or no mine clicked
-    //If mine display lose sequence
-    //If win display win sequence
-    //If neither continue playing
-    //Update the mines remaining based on the last action
-    //Realign the mines remaining display pending win-check
-    //Update the board based on the last action
     checkWinLose();
+    // for(i = 0; i < winBoard.length; i++) {
+    //     for(j = 0; j < winBoard[i].length; j++) {
+    //         if(!false) winner = youWin;
+    //     }
+    // }
+    //Update the mines remaining based on the last action
 };
 
 //Randomize indices for mines
@@ -129,6 +144,7 @@ function mineIdxGrab() {
 function minePlace() {
     for(i=0; i < mineIdx.length; i++) {
         board[mineIdx[i][0]][mineIdx[i][1]] = -1;
+        // winBoard[mineIdx[i][0]][mineIdx[i][0]] = true;
     };
 };
 
@@ -192,6 +208,7 @@ function numMines() {
 //Disable On Context Menu and place a flag on right click/control-click
 document.oncontextmenu = function(e) {
     e.target.setAttribute('style', 'background-image: url(https://i.imgur.com/5ONOFFi.png); background-size: cover;')
+    // winBoard[e.target][e.target] = true;
     return false;
 }
 
@@ -216,7 +233,6 @@ function checkWinLose() {
 }
 
 //Creating recursive 0 scan to open the void
-
 function checkAround(x,y) {
     x = Number(x);
     y = Number(y);
@@ -238,10 +254,12 @@ function zeroVoid(clIdxRow,clIdxCol) {
     checked.push([clIdxRow,clIdxCol]);
     if(board[clIdxRow][clIdxCol] > 0){
         boardElem[clIdxCol][clIdxRow].innerText = board[clIdxRow][clIdxCol];
+        // winBoard[clIdxRow][clIdxCol] = true;
         return;
     } else {
         if(board[clIdxRow][clIdxCol] === 0) {
             boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
+            // winBoard[clIdxRow][clIdxCol] = true;
             let neighbors = checkAround(clIdxRow,clIdxCol);
             // Recursively call zeroVoid
             neighbors.forEach(n => zeroVoid(n[0], n[1]));

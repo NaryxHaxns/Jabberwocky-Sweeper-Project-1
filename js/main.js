@@ -295,18 +295,18 @@ function zeroVoid(clIdxRow,clIdxCol) {
                 // let temporaryValidSpots = validSpots;
                 // let temporaryValidSpots = [];
                 validSpots.forEach(e => {
-                    allValidSpots.push(e);
                     let spot = e.toString();
                     let recursiveString = recursiveValidSpots.toString();
                     let allValidString = allValidSpots.toString();
                     if(allValidString.includes(spot)) {
-
+                        
                     } else {
                         recursiveValidSpots.push(e);
                     }
                     // temporaryValidSpots.push(e);
+                    allValidSpots.push(e);
                 })
-                debugger;
+                // debugger;
                 // for(i = 0; i < validSpots.length; i++) {
                     while(validSpots.length) {
                         let firstEl = validSpots.pop();

@@ -33,32 +33,17 @@ let mineIdx = [];
 //Arrays for recursive logic
 let checked = [];
 
-let validSpots = [];
-
-let recursiveValidSpots = [];
-
-let allValidSpots = [];
-
-let storedSpots = [];
-
 //End Game Message
 let gameOver = document.querySelector('.endGame');
 
 //Cached elements
 
-//Column Arrays of the HTML board elements
-const colOneElArr = Array.from(document.querySelectorAll('#colOne > div'));
-const colTwoElArr = Array.from(document.querySelectorAll('#colTwo > div'));
-const colThreeElArr = Array.from(document.querySelectorAll('#colThree > div'));
-const colFourElArr = Array.from(document.querySelectorAll('#colFour > div'));
-const colFiveElArr = Array.from(document.querySelectorAll('#colFive > div'));
-const colSixElArr = Array.from(document.querySelectorAll('#colSix > div'));
-const colSevenElArr = Array.from(document.querySelectorAll('#colSeven > div'));
-const colEightElArr = Array.from(document.querySelectorAll('#colEight > div'));
-const colNineElArr = Array.from(document.querySelectorAll('#colNine > div'));
-
 //An array of column Arrays creating an accessible board of Elements
-const boardElem = [colOneElArr, colTwoElArr, colThreeElArr, colFourElArr, colFiveElArr, colSixElArr, colSevenElArr, colEightElArr, colNineElArr];
+const boardElem = [];
+
+for (let col = 1; col < 10; col++) {
+    boardElem.push(Array.from(document.querySelectorAll(`#board section:nth-child(${col}) > div`)));
+};
 
 //Event Listeners
 
@@ -111,6 +96,7 @@ function init() {
     //Establish the win to null
     winner = null;
     //Invoke render()
+    gameOver.setAttribute('style', 'visibility: hidden;');
     render();
 };
 
@@ -230,48 +216,11 @@ function checkWinLose() {
 }
 
 //Creating recursive 0 scan to open the void
-// function zeroVoid(x, y) {
-//     let spots = checkAround(x,y);
-//     if(checked.length === 0) checked.push([Number(x), Number(y)]);
-//     let newPair = false;
-//     function checkForNewPair() {
-//         for(let i = 0; i < checked.length; i++) {
-//             if(checked[i][0] !== Number(x) && checked[i][1] !== Number(y)) {
-//             } else {
-//                 return newPair;
-//             }
-//         }
-//         newPair = true;
-//         return newPair;
-//     }
-//     checkForNewPair();
-//     debugger;
-//     if(newPair) checked.push([Number(x), Number(y)])
-//     else return;
-//     console.log(checked);
-//     if(board[x][y] !== 0) {
-//         return;
-//     } else {
-//         for(let i = 0; i < spots.length; i++) {
-//             // for(let j = 0; j < checked.length; j++){
-//                 // if(checked[j][0] !== spots[i][0] && checked[j][1] !== spots[i][1]) {
-//                     if(board[spots[i][0]][spots[i][1]] === 0) {
-//                         console.log('calling zeroVoid ', spots[i][0], spots[i][1]);
-//                         // checked.push();
-//                         zeroVoid(spots[i][0], spots[i][1]);
-//                     }
-//                 // }
-//             // }
-//             console.log(board[spots[i][0]][spots[i][1]]);
-//         }
-//     };
-//     // zeroVoid(x, y);
-// }
 
 function checkAround(x,y) {
     x = Number(x);
     y = Number(y);
-    validSpots = [];
+    const validSpots = [];
     if(x > 0 && y > 0) validSpots.push([x - 1, y - 1]);
     if(x > 0) validSpots.push([x - 1, y]);
     if(x > 0 && y < 8) validSpots.push([x - 1, y + 1]);
@@ -280,11 +229,12 @@ function checkAround(x,y) {
     if(x < 8 && y > 0) validSpots.push([x + 1, y - 1]);
     if(x < 8) validSpots.push([x + 1, y]);
     if(x < 8 && y < 8) validSpots.push([x + 1, y + 1]);
-    console.log(validSpots);
     return validSpots;
 };
 
 function zeroVoid(clIdxRow,clIdxCol) {
+    // Return if this cell is already revealed
+    if (checked.some(arr => arr[0] === clIdxRow && arr[1] === clIdxCol)) return;
     checked.push([clIdxRow,clIdxCol]);
     if(board[clIdxRow][clIdxCol] > 0){
         boardElem[clIdxCol][clIdxRow].innerText = board[clIdxRow][clIdxCol];
@@ -292,49 +242,9 @@ function zeroVoid(clIdxRow,clIdxCol) {
     } else {
         if(board[clIdxRow][clIdxCol] === 0) {
             boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
-            checkAround(clIdxRow,clIdxCol);
-            console.log(allValidSpots);
-            validSpots.forEach(e => {
-                let spot = e.toString();
-                let recursiveString = recursiveValidSpots.toString();
-                let allValidString = allValidSpots.toString();
-                if(allValidString.includes(spot)) {
-                            
-                } else {
-                    recursiveValidSpots.push(e);
-                    allValidSpots.push(e);
-                };
-            });
-            while(validSpots.length) {
-                let firstEl = validSpots.pop();
-                if(board[firstEl[0]][firstEl[1]] === 0) {
-                    boardElem[firstEl[1]][firstEl[0]].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
-                } else {
-                    boardElem[firstEl[1]][firstEl[0]].innerText = board[firstEl[0]][firstEl[1]];
-                };
-            };
-            while(recursiveValidSpots.length) {
-                console.log('hitting ', i);
-                let piece = recursiveValidSpots.shift();
-                zeroVoid(piece[0],piece[1]);
-            }
-            if(validSpots.length === 0 && recursiveValidSpots.length === 0) {
-                allValidSpots.map(e => {
-                    storedSpots.push(e);
-                })
-                while(allValidSpots.length) {
-                    let piece = allValidSpots.shift();
-                    let element = document.getElementById(`c${piece[1] + 1}r${piece[0] + 1}`);
-                    if(element.style.backgroundColor) {
-                        console.log('hitting style', piece, element);
-                    };
-                }
-                while(storedSpots.length) {
-                    let piece = storedSpots.shift();
-                    let element = document.getElementById(`c${piece[1] + 1}r${piece[0] + 1}`);
-                    console.log(piece, element.textContent, element.style.backgroundColor);
-                };
-            };
+            let neighbors = checkAround(clIdxRow,clIdxCol);
+            // Recursively call zeroVoid
+            neighbors.forEach(n => zeroVoid(n[0], n[1]));
         };
     };
 };

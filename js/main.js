@@ -291,7 +291,7 @@ function zeroVoid(clIdxRow,clIdxCol) {
             boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-color: rgba(39,38,52, .6)');
             checkAround(clIdxRow,clIdxCol);
             // if(checked.includes([clIdxRow,clIdxCol]) === false) {
-                console.log(validSpots);
+                console.log(allValidSpots);
                 // let temporaryValidSpots = validSpots;
                 // let temporaryValidSpots = [];
                 validSpots.forEach(e => {
@@ -302,9 +302,9 @@ function zeroVoid(clIdxRow,clIdxCol) {
                         
                     } else {
                         recursiveValidSpots.push(e);
+                        allValidSpots.push(e);
                     }
                     // temporaryValidSpots.push(e);
-                    allValidSpots.push(e);
                 })
                 // debugger;
                 // for(i = 0; i < validSpots.length; i++) {
@@ -321,9 +321,19 @@ function zeroVoid(clIdxRow,clIdxCol) {
                 while(recursiveValidSpots.length) {
                     console.log('hitting ', i)
                     let piece = recursiveValidSpots.shift();
-                    if(board[piece[0]][piece[1]] == 0) {
+                    // if(board[piece[0]][piece[1]] == 0) {
                         // recursiveValidSpots.shift();
                         zeroVoid(piece[0],piece[1])
+                    // }
+                }
+                if(validSpots.length === 0 && recursiveValidSpots.length === 0) {
+                    while(allValidSpots.length) {
+                        let piece = allValidSpots.shift();
+                        let element = document.getElementById(`c${piece[1] + 1}r${piece[0] + 1}`);
+                        console.log(piece, element.textContent, element.style.backgroundColor);
+                        if(element.textContent == '' && element.style.backgroundColor == '') {
+                            console.log(piece, element);
+                        }
                     }
                 }
                 // };

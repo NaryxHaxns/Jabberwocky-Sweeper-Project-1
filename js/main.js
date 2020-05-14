@@ -18,7 +18,7 @@ let winBoard;
 let isWin;
 
 //Declare timer and clock initialization variables
-let timerFunc;
+let timerFunc = setInterval(timerClock, 1000);
 
 let begin = 1;
 
@@ -196,7 +196,7 @@ function addOne() {
 
 //Set up the timer start and stop functions
 function timerClock() {
-    timerFunc  = setInterval(timerClock, 1000);
+    // timerFunc  = setInterval(timerClock, 1000);
     document.querySelector('.timer').innerHTML = begin;
     begin++;
 }

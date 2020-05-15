@@ -42,7 +42,6 @@ h1 {
 button {
   position: absolute;
   align-self: flex-end;
-  /* font-family: 'Lovers Quarrel', cursive; */
   font-family: 'Eater', cursive;
   color: rgb(99,94,110);
   font-size: 15px;
@@ -125,64 +124,65 @@ main {
 @media only screen and (max-width: 375px) {
   h1 {
       font-size: 20px;
-  };
+  }
   main {
       width: 350px;
       height: 350px;
-  };
+  }
   .timer, .mines {
       height: 25px;
       width: 62.5px;
       align-self: flex-start;
       font-size: 15px;
-  };
+  }
   .endGame {
     height: 270px;
     width: 270px;
-  };
-};
+    font-size: 50px;
+  }
+}
 
 @keyframes fadeIn {
   0% {
     opacity:0;
-  };
+  }
   100% {
     opacity:1;
-  };
-};
+  }
+}
 
 @-moz-keyframes fadeIn {
   0% {
     opacity:0;
-  };
+  }
   100% {
     opacity:1;
-  };
-};
+  }
+}
 
 @-webkit-keyframes fadeIn {
   0% {
     opacity:0;
-  };
+  }
   100% {
     opacity:1;
-  };
-};
+  }
+}
 
 @-o-keyframes fadeIn {
   0% {
     opacity:0;
-  };
+  }
   100% {
     opacity:1;
-  };
-};
+  }
+}
 
 @-ms-keyframes fadeIn {
   0% {
     opacity:0;
-  };
+  }
   100% {
     opacity:1;
-  };
-};
+  }
+}

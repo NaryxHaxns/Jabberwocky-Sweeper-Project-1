@@ -5,7 +5,7 @@ let lose = {
     '1': 'The Jabberwock caught you in its claws and bit you with its jaws!',
     '2': 'The Jubjub bird swooped down and plucked you from the ground!',
     '3': 'You have become the latest catch of the frumious Bandersnatch!'
-}
+};
 
 //State variables
 
@@ -59,8 +59,8 @@ function tileSelect(e) {
         for(i = 0; i < board.length; i++){
             for(j = 0; j < board[i].length; j++){
                 if(board[i][j] === -1){
-                    boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(https://i.imgur.com/dNjBu6E.jpg); background-size: cover;')
-                }
+                    boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(https://i.imgur.com/dNjBu6E.jpg); background-size: cover;');
+                };
                 boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(https://i.imgur.com/DG8VfK0.jpg); background-size: cover;');
             };
         };
@@ -125,13 +125,13 @@ function render() {
         for(j = 0; j < winBoard[i].length; j++) {
             if(winBoard[i][j] == false) {
                 tempWin = false;
-            }
+            };
         };
     };
     if(tempWin) {
         timerStop();
         document.getElementById('board').removeEventListener('click', tileSelect);
-        gameOver.setAttribute('style', 'visibility: visible;')
+        gameOver.setAttribute('style', 'visibility: visible;');
         gameOver.innerHTML = 'And hast thou slain the Jabberwock? O frabjous day! Callooh! Callay!';
     }
     //Update the mines remaining based on the last action
@@ -141,7 +141,7 @@ function render() {
 //Randomize indices for mines
 function mineRando(min,max) {
     return Math.floor(Math.random() * (max - min) + min);
-}
+};
 
 //Creating an Array of indices and storing them for placement
 function mineIdxGrab() {
@@ -149,7 +149,7 @@ function mineIdxGrab() {
         let mine = [mineRando(0,8), mineRando(0,8)];
         if(!mineIdx.toString().includes(mine.toString())) {
             mineIdx.push(mine);
-        }
+        };
     };
 };
 
@@ -203,21 +203,21 @@ function timerClock() {
     // timerFunc  = setInterval(timerClock, 1000);
     document.querySelector('.timer').innerHTML = begin;
     begin++;
-}
+};
 
 function timerStop() {
     clearInterval(timerFunc);
-}
+};
 
 //Display number of mines on the board
 function numMines() {
     mines = mineIdx.length;
     document.querySelector('.mines').innerHTML = mines;
-}
+};
 
 //Disable On Context Menu and place a flag on right click/control-click
 document.oncontextmenu = function(e) {
-    e.target.setAttribute('style', 'background-image: url(https://i.imgur.com/5ONOFFi.png); background-size: cover;')
+    e.target.setAttribute('style', 'background-image: url(https://i.imgur.com/5ONOFFi.png); background-size: cover;');
     mineIdx.pop();
     render();
     return false;
@@ -226,7 +226,7 @@ document.oncontextmenu = function(e) {
 //Sequence to randomize one of three failure messages
 function youLose(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
-}
+};
 
 //Win message logic
 function checkWinLose() {

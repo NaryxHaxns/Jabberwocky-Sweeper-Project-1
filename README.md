@@ -6,7 +6,7 @@
 ______________________________________________________________________
 ## A Brief History
 ______________________________________________________________________
-There are a number of variations to the game, including probably the most well-known being *Microsoft Minesweeper* (Curt Johnson & Robert Donner, c. early 1990s). Other variants over time include *Cube* (Jerimac Ratliff, c. 1960s), *Mined-Out* (Qucksilva, c. 1983), *Yomp* (Virgin Interactive, c. 1983), *Relentless Logic* or *RLogic* (Conway, Hong, and Smith, c. 1985), among others.
+There are a number of variations to the game, including probably the most well-known being *Microsoft Minesweeper* (Curt Johnson & Robert Donner, c. early 1990s). Other variants over time include *Cube* (Jerimac Ratliff, c. 1960s), *Mined-Out* (Qucksilva, c. 1983), *Yomp* (Virgin Interactive, c. 1983), *Relentless Logic* or *RLogic* (Conway, Hong, and Smith, c. 1985), among many others.
 ______________________________________________________________________
 ## Why Minesweeper and why Lewis Carroll's Jabberwocky
 ______________________________________________________________________
@@ -37,4 +37,12 @@ Now that you know the rules, [let's play](https://naryxhaxns.github.io/Jabberwoc
 ______________________________________________________________________
 ## Next Steps
 ______________________________________________________________________
-Starting this project I wanted to be able to give the user the option of choosing a 9x9, 16x16, or 16x30 sized board. One major icebox item would be implementing this capability.
+Icebox Items:
+
+* Give the user the option of choosing a 9x9, 16x16, or 16x30 sized board.
+
+* Incorporate audio effects and animations to a fuller extent than I have used.
+
+* Storing player names and win times in the space at the bottom of the page using window.localStorage.
+
+* Further media query functionality to allow gameplay across all platforms.

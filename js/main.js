@@ -15,8 +15,6 @@ let board;
 //Declare true/false board
 let winBoard;
 
-let isWin;
-
 //Declare timer and clock initialization variables
 let timerFunc = setInterval(timerClock, 1000);
 
@@ -27,8 +25,6 @@ let mines;
 
 //Declare win
 let winner;
-
-let youWin;
 
 let loser;
 
@@ -56,7 +52,6 @@ for (let col = 1; col < 10; col++) {
 document.getElementById('board').addEventListener('click', tileSelect);
 
 function tileSelect(e) {
-    // timerClock();
     let clIdxRow = e.target.getAttribute('row');
     let clIdxCol = e.target.getAttribute('col');
     if(board[clIdxRow][clIdxCol] === -1){
@@ -67,8 +62,8 @@ function tileSelect(e) {
                     boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(https://i.imgur.com/dNjBu6E.jpg); background-size: cover;')
                 }
                 boardElem[clIdxCol][clIdxRow].setAttribute('style', 'background-image: url(https://i.imgur.com/DG8VfK0.jpg); background-size: cover;');
-            }
-        }
+            };
+        };
     } else {
         zeroVoid(clIdxRow, clIdxCol);
     };
@@ -76,7 +71,11 @@ function tileSelect(e) {
 };
 
 //Establish a listener/function for game reset
-document.querySelector('button').addEventListener('click', init);
+document.querySelector('button').addEventListener('click', reset);
+
+function reset() {
+    location.reload();
+};
 
 //Initialization
 init();
@@ -113,7 +112,6 @@ function init() {
     numMines();
     //Establish the win to null
     winner = null;
-    gameOver.setAttribute('style', 'visibility: hidden;');
     //Invoke render()
     render();
 };
@@ -130,8 +128,6 @@ function render() {
             }
         };
     };
-    console.log(tempWin)
-    console.log(winBoard)
     if(tempWin) {
         timerStop();
         document.getElementById('board').removeEventListener('click', tileSelect);
@@ -239,13 +235,8 @@ function checkWinLose() {
         document.getElementById('board').removeEventListener('click', tileSelect);
         gameOver.setAttribute('style', 'visibility: visible;')
         gameOver.innerHTML = lose[youLose(1,4)];
-    } else if(winner === youWin) {
-        timerStop();
-        document.getElementById('board').removeEventListener('click', tileSelect);
-        gameOver.setAttribute('style', 'visibility: visible;')
-        gameOver.innerHTML = 'And hast thou slain the Jabberwock? O frabjous day! Callooh! Callay!';
-    }
-}
+    };
+};
 
 //Creating recursive 0 scan to open the void
 function checkAround(x,y) {
@@ -281,4 +272,3 @@ function zeroVoid(clIdxRow,clIdxCol) {
         };
     };
 };
-
